@@ -25,18 +25,27 @@ public class Tokenizer {
 		CharBuffer buffer = new CharBuffer();
 		while(state != TokenType.END){
 			if(index < chars.length){
+				char c = chars[index];
 				switch(state){
 				case END:
 					break;
 				case ESCAPE:
 					break;
 				case NAME:
+					if(isLetter(c)){
+						buffer.addChar(c);
+						if(isSpace(nextChar(chars))){
+							tokens.add(toToken(state, buffer));
+							buffer.clear();
+							state = TokenType.SPACE;
+						}
+					}
 					break;
 				case NUMBER:
 					break;
 				case SPACE:
-					if(isLetter(chars[index])){
-						buffer.addChar(chars[index]);
+					if(isLetter(c)){
+						buffer.addChar(c);
 						state = TokenType.NAME;
 						if(isSpace(nextChar(chars))){
 							tokens.add(toToken(state, buffer));

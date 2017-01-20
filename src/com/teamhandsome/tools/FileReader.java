@@ -11,29 +11,30 @@ import java.io.InputStreamReader;
 public class FileReader {
 
 	public FileReader() {
-		
+
 	}
-	
+
 	public String readFileToString(String path) throws FileNotFoundException{
 		StringBuilder builder = new StringBuilder();
 		File file = new File(path);
 		if(file.exists()){
 			String line = "";
 			try {
-			    InputStream fis = new FileInputStream(file);
-			    InputStreamReader isr = new InputStreamReader(fis);
-			    BufferedReader br = new BufferedReader(isr);
-			    while ((line = br.readLine()) != null) {
-			        builder.append(line);
-			        builder.append("\n");
-			    }
+				InputStream fis = new FileInputStream(file);
+				InputStreamReader isr = new InputStreamReader(fis);
+				BufferedReader br = new BufferedReader(isr);
+				while ((line = br.readLine()) != null) {
+					builder.append(line);
+					builder.append("\n");
+				}
+				br.close();
 			}catch(IOException e){
-				
+				e.printStackTrace();
 			}
 		}else{
 			throw new FileNotFoundException();
 		}
 		return builder.toString();
 	}
-	
+
 }
