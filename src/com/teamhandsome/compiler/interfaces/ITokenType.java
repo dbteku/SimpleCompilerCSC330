@@ -1,9 +1,9 @@
 package com.teamhandsome.compiler.interfaces;
 
-import com.teamhandsome.compiler.models.TokenState;
+import com.teamhandsome.compiler.models.TokenType;
 
 public interface ITokenType {
 
-	boolean isType(char[] chars, TokenState state);
+	boolean isType(char[] chars, TokenType state);
 	
 }

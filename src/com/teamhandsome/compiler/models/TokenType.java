@@ -1,6 +1,6 @@
 package com.teamhandsome.compiler.models;
 
-public enum TokenState {
+public enum TokenType {
 
 	SPACE, NUMBER, STRING, NAME, TOKEN, ESCAPE, END
 	
