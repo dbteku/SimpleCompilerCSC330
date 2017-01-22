@@ -39,6 +39,7 @@ public class Tokenizer {
 			if(index < chars.length){
 				char c = chars[index];
 				if(!isNewLine(c)){
+				//	System.out.println(c + 0);
 					switch(state){
 					case END:
 						break;
@@ -133,6 +134,11 @@ public class Tokenizer {
 				tokens.add(toToken(state, buffer));
 				buffer.clear();
 				state = TokenType.SPACE;
+			}
+			else if(isSymbol(nextChar(chars))){
+				tokens.add(toToken(state, buffer));
+				buffer.clear();
+				state = TokenType.SYMBOL;
 			}
 		}
 		else if(isSymbol(c)){
