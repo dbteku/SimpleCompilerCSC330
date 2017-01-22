@@ -38,33 +38,10 @@ public class Tokenizer {
 		while(state != TokenType.END){
 			if(index < chars.length){
 				char c = chars[index];
-				if(!isNewLine(c)){
-				//	System.out.println(c + 0);
-					switch(state){
-					case END:
-						break;
-					case ESCAPE:
-						break;
-					case NAME:
-						nameState(c, chars, buffer, tokens);
-						break;
-					case NUMBER:
-						break;
-					case SPACE:
-						spaceState(c, chars, buffer, tokens);
-						break;
-					case STRING:
-						break;
-					case SYMBOL:
-						symbolState(c, chars, buffer, tokens);
-						break;
-					case TOKEN:
-						break;
-					default:
-						break;
-					}
-				}else{
+				if(isNewLine(c)){
 					state = TokenType.SPACE;
+				}else{
+					switchOnState(c, chars, buffer, tokens);
 				}
 				index++;
 			}else{
@@ -72,6 +49,32 @@ public class Tokenizer {
 			}
 		}
 		return tokens;
+	}
+
+	private void switchOnState(char c, char[] chars, CharBuffer buffer, List<Token> tokens){
+		switch(state){
+		case END:
+			break;
+		case ESCAPE:
+			break;
+		case NAME:
+			nameState(c, chars, buffer, tokens);
+			break;
+		case NUMBER:
+			break;
+		case SPACE:
+			spaceState(c, chars, buffer, tokens);
+			break;
+		case STRING:
+			break;
+		case SYMBOL:
+			symbolState(c, chars, buffer, tokens);
+			break;
+		case TOKEN:
+			break;
+		default:
+			break;
+		}
 	}
 
 	private Token toToken(TokenType state, CharBuffer buffer){
@@ -105,7 +108,7 @@ public class Tokenizer {
 	private boolean isSpace(char c){
 		return c == SPACE || c == TAB || isNewLine(c);
 	}
-	
+
 	private boolean isNewLine(char c) {
 		return c == NEW_LINE;
 	}
