@@ -21,6 +21,8 @@ public class Tokenizer {
 	private final int ASCII_SYMBOL_SIX = 96;
 	private final int ASCII_SYMBOL_SEVEN = 123;
 	private final int ASCII_SYMBOL_EIGHT = 126;
+	private final int ASCII_NUMBER_START = 48;
+	private final int ASCII_NUMBER_END = 57;
 	private final int SPACE = 32;
 	private final int NEW_LINE = 10;
 	private final int TAB = 11;
@@ -61,6 +63,7 @@ public class Tokenizer {
 			nameState(c, chars, buffer, tokens);
 			break;
 		case NUMBER:
+			numberState(c, chars, buffer, tokens);
 			break;
 		case SPACE:
 			spaceState(c, chars, buffer, tokens);
@@ -75,6 +78,11 @@ public class Tokenizer {
 		default:
 			break;
 		}
+	}
+	
+	private void addTokenToList(CharBuffer buffer, List<Token> tokens){
+		tokens.add(toToken(state, buffer));
+		buffer.clear();
 	}
 
 	private Token toToken(TokenType state, CharBuffer buffer){
@@ -97,6 +105,11 @@ public class Tokenizer {
 		//65 - 90 || 97 - 122
 		return c >= LETTER_START_ONE && c <= LETTER_END_ONE || c >= LETTER_START_TWO && c<= LETTER_END_TWO;
 	}
+	
+	private boolean isNumber(char c){
+		// 48 - 57
+		return c >= ASCII_NUMBER_START && c <= ASCII_NUMBER_END;
+	}
 
 	private boolean isSymbol(char c){
 		return c >= ASCII_SYMBOL_ONE && c <= ASCII_SYMBOL_TWO || 
@@ -117,14 +130,16 @@ public class Tokenizer {
 		if(isLetter(c)){
 			buffer.addChar(c);
 			if(isSpace(nextChar(chars))){
-				tokens.add(toToken(state, buffer));
-				buffer.clear();
+				addTokenToList(buffer, tokens);
 				state = TokenType.SPACE;
 			}
 			else if(isSymbol(nextChar(chars))){
-				tokens.add(toToken(state, buffer));
-				buffer.clear();
+				addTokenToList(buffer, tokens);
 				state = TokenType.SYMBOL;
+			}
+			else if(isNumber(nextChar(chars))){
+				addTokenToList(buffer, tokens);
+				state = TokenType.NUMBER;
 			}
 		}
 	}
@@ -134,21 +149,22 @@ public class Tokenizer {
 			buffer.addChar(c);
 			state = TokenType.NAME;
 			if(isSpace(nextChar(chars))){
-				tokens.add(toToken(state, buffer));
-				buffer.clear();
 				state = TokenType.SPACE;
 			}
 			else if(isSymbol(nextChar(chars))){
-				tokens.add(toToken(state, buffer));
-				buffer.clear();
+				addTokenToList(buffer, tokens);
 				state = TokenType.SYMBOL;
 			}
 		}
 		else if(isSymbol(c)){
 			buffer.addChar(c);
 			state = TokenType.SYMBOL;
-			tokens.add(toToken(state, buffer));
-			buffer.clear();
+			addTokenToList(buffer, tokens);
+		}
+		else if(isNumber(c)){
+			buffer.addChar(c);
+			state = TokenType.NUMBER;
+			addTokenToList(buffer, tokens);
 		}
 	}
 
@@ -163,6 +179,16 @@ public class Tokenizer {
 			else if(isSpace(nextChar(chars))){
 				state = TokenType.SPACE;
 			}
+			else if(isNewLine(nextChar(chars))){
+				buffer.addChar(c);
+				addTokenToList(buffer, tokens);
+				state = TokenType.NUMBER;
+			}
 		}
 	}
+	
+	private void numberState(char c, char[] chars, CharBuffer buffer, List<Token> tokens){
+
+	}
+	
 }
