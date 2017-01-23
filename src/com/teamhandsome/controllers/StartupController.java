@@ -19,7 +19,7 @@ public class StartupController {
 	
 	public void start(){
 		try {
-			String code = reader.readFileToString("sample.cs2");
+			String code = reader.readFileToString("squareRoot.cs2");
 			List<Token> tokens = tokenizer.tokenize(code.toCharArray());
 			System.out.println(tokens);
 		} catch (FileNotFoundException e) {

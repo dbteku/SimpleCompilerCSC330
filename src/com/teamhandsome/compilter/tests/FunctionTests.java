@@ -14,7 +14,7 @@ public class FunctionTests {
 
 	@Test
 	public void simpleFunction() {
-		String code = "void testMethod(int i){\n int number = 0; i = i + 1; }";
+		String code = "void testMethod(int number){\n int i = 0; i = i + 1; }";
 		Tokenizer tokenizer = new Tokenizer();
 		List<Token> actual = tokenizer.tokenize(code.toCharArray());
 		List<Token> expected = new ArrayList<>();
