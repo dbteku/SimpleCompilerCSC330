@@ -1,0 +1,46 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using HelloMVC.Models;
+
+namespace HelloMVC.Controllers
+{
+    public class HomeController : Controller
+    {
+        public String[] MovieList = { "Cory in the House: The Movie", "Lion King", "Barbie the Musical" };
+        public String[] HobbiesList = { "Baseball", "Games", "Friends" };
+       
+        // GET: Home
+        public ViewResult Index()
+        {
+            
+            Random random = new Random();
+            int randIndexMovie = random.Next(0, MovieList.Length);
+            int randIndexHobbie = random.Next(0, HobbiesList.Length);
+           
+            ViewBag.Movies = MovieList[randIndexMovie];
+            ViewBag.Hobbies = HobbiesList[randIndexHobbie];
+            return View();
+        }
+
+        [HttpGet]
+        public ViewResult UserInputForm()
+        { 
+            return View();
+        }
+        [HttpPost]
+        public ViewResult UserInputForm(UserInput userInput)
+        {
+            if (ModelState.IsValid)
+            {
+                return View("Thanks", userInput);
+            }
+            else
+            {
+                return View();
+            }
+        }
+    }
+}
