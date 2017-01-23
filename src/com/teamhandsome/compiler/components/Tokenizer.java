@@ -99,7 +99,7 @@ public class Tokenizer {
 
 	private char nextChar(char[] chars){
 		char c = 0;
-		if(index < chars.length){
+		if(index < chars.length - 1){
 			c = chars[index + 1];
 		}
 		return c;

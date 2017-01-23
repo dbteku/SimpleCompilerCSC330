@@ -23,4 +23,15 @@ public class Token {
 		return type + ": " + value;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		boolean equals = false;
+		try {
+			Token other = (Token) obj;
+			equals = other.value.equalsIgnoreCase(value) && other.type == type;
+		} catch (ClassCastException e) {
+		}
+		return equals;
+	}
+	
 }
