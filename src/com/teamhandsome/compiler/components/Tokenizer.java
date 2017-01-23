@@ -3,6 +3,7 @@ package com.teamhandsome.compiler.components;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.glass.ui.EventLoop.State;
 import com.sun.javafx.scene.control.skin.FXVK.Type;
 import com.teamhandsome.compiler.models.CharBuffer;
 import com.teamhandsome.compiler.models.Token;
@@ -25,6 +26,7 @@ public class Tokenizer {
 	private final int ASCII_NUMBER_START = 48;
 	private final int ASCII_NUMBER_END = 57;
 	private final int PERIOD = 46;
+	private final int QUOTE = 34;
 	private final int SPACE = 32;
 	private final int NEW_LINE = 10;
 	private final int TAB = 11;
@@ -71,6 +73,7 @@ public class Tokenizer {
 			spaceState(c, chars, buffer, tokens);
 			break;
 		case STRING:
+			stringState(c, chars, buffer, tokens);
 			break;
 		case SYMBOL:
 			symbolState(c, chars, buffer, tokens);
@@ -104,6 +107,13 @@ public class Tokenizer {
 		}
 		return c;
 	}
+	
+	private void skip(char[] chars){
+		if(index < chars.length - 1){
+			index ++;
+			state = TokenType.SPACE;
+		}
+	}
 
 	private boolean isLetter(char c){
 		//65 - 90 || 97 - 122
@@ -120,6 +130,10 @@ public class Tokenizer {
 				c >= ASCII_SYMBOL_THREE && c <= ASCII_SYMBOL_FOUR || 
 				c >= ASCII_SYMBOL_FIVE && c <= ASCII_SYMBOL_SIX || 
 				c >= ASCII_SYMBOL_SEVEN && c <= ASCII_SYMBOL_EIGHT;
+	}
+	
+	private boolean isQuote(char c){
+		return c == QUOTE;
 	}
 	
 	private boolean isPeriod(char c){
@@ -143,11 +157,25 @@ public class Tokenizer {
 			}
 			else if(isSymbol(nextChar(chars))){
 				addTokenToList(buffer, tokens);
-				state = TokenType.SYMBOL;
+				if(isQuote(nextChar(chars))){
+					state = TokenType.STRING;
+				}else{
+					state = TokenType.SYMBOL;	
+				}
 			}
 			else if(isNumber(nextChar(chars))){
 				addTokenToList(buffer, tokens);
 				state = TokenType.NUMBER;
+			}
+		}
+	}
+	
+	private void stringState(char c, char[] chars, CharBuffer buffer, List<Token> tokens){
+		if(state == TokenType.STRING){
+			buffer.addChar(c);
+			if(isQuote(nextChar(chars))){
+				addTokenToList(buffer, tokens);
+				skip(chars);
 			}
 		}
 	}
@@ -166,11 +194,15 @@ public class Tokenizer {
 			}
 		}
 		else if(isSymbol(c)){
-			buffer.addChar(c);
-			state = TokenType.SYMBOL;
-			addTokenToList(buffer, tokens);
-			if(isSpace(nextChar(chars))){
-				state = TokenType.SPACE;
+			if(isQuote(c)){
+				state = TokenType.STRING;
+			}else{
+				buffer.addChar(c);
+				state = TokenType.SYMBOL;
+				addTokenToList(buffer, tokens);
+				if(isSpace(nextChar(chars))){
+					state = TokenType.SPACE;
+				}	
 			}
 		}
 		else if(isNumber(c)){
@@ -182,9 +214,12 @@ public class Tokenizer {
 			else if(isSymbol(nextChar(chars))){
 				if(isPeriod(nextChar(chars))){
 					
+				}
+				else if(isQuote(nextChar(chars))){
+					state = TokenType.STRING;
 				}else{
 					addTokenToList(buffer, tokens);
-					state = TokenType.SYMBOL;	
+					state = TokenType.SYMBOL;		
 				}
 			}
 			else if(isLetter(nextChar(chars))){
@@ -199,21 +234,25 @@ public class Tokenizer {
 
 	private void symbolState(char c, char[] chars, CharBuffer buffer, List<Token> tokens){
 		if(isSymbol(c)){
-			buffer.addChar(c);
-			tokens.add(toToken(state, buffer));
-			buffer.clear();
-			if(isLetter(nextChar(chars))){
-				state = TokenType.NAME;
-				addTokenToList(buffer, tokens);
-			}
-			else if(isSpace(nextChar(chars))){
-				addTokenToList(buffer, tokens);
-				state = TokenType.SPACE;
-			}
-			else if(isNumber(nextChar(chars))){
+			if(isQuote(c)){
+				state = TokenType.STRING;
+			}else{
 				buffer.addChar(c);
-				addTokenToList(buffer, tokens);
-				state = TokenType.NUMBER;
+				tokens.add(toToken(state, buffer));
+				buffer.clear();
+				if(isLetter(nextChar(chars))){
+					state = TokenType.NAME;
+					addTokenToList(buffer, tokens);
+				}
+				else if(isSpace(nextChar(chars))){
+					addTokenToList(buffer, tokens);
+					state = TokenType.SPACE;
+				}
+				else if(isNumber(nextChar(chars))){
+					buffer.addChar(c);
+					addTokenToList(buffer, tokens);
+					state = TokenType.NUMBER;
+				}	
 			}
 		}
 		else if(isNumber(c)){
