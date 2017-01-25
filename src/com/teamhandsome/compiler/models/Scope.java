@@ -16,11 +16,15 @@ public class Scope {
 	}
 	
 	public void addVariable(Variable variable){
-		
+		if(!variables.containsKey(variable.getName())){
+			variables.put(variable.getName(), variable);
+		}
 	}
 	
 	public void removeVariable(String variableName){
-		
+		if(variables.containsKey(variableName)){
+			variables.remove(variableName);
+		}
 	}
 	
 }

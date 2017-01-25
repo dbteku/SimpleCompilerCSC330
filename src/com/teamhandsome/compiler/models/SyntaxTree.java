@@ -8,4 +8,8 @@ public class SyntaxTree {
 		root = null;
 	}
 	
+	public void addRoot(){
+		
+	}
+	
 }
