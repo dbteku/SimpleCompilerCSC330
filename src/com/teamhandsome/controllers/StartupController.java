@@ -21,10 +21,8 @@ public class StartupController {
 		try {
 			String code = reader.readFileToString("squareRoot.cs2");
 			List<Token> tokens = tokenizer.tokenize(code.toCharArray());
-			System.out.println(tokens);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
-	
 }

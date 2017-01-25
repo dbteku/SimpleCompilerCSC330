@@ -2,8 +2,6 @@ package com.teamhandsome.compiler.models;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class TreeNode {
 
@@ -13,4 +11,14 @@ public class TreeNode {
 		children = new ArrayList<>();
 	}
 
+	public void addNode(TreeNode node){
+		if(!children.contains(node)){
+			this.children.add(node);
+		}
+	}	
+	
+	public void execute(){
+		
+	}
+	
 }
