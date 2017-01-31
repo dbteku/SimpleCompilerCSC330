@@ -8,8 +8,14 @@ public class SyntaxTree {
 		root = null;
 	}
 	
-	public void addRoot(){
-		
+	public void addNode(TreeNode node){
+		if(root == null){
+			root = node;
+		}
+	}
+	
+	public boolean isEmpty(){
+		return root == null;
 	}
 	
 }
