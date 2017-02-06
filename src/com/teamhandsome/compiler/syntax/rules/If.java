@@ -17,10 +17,10 @@ public class If extends SyntaxRule{
 	public boolean isRule(List<SyntaxNode> nodes, SyntaxNode next) {
 		return nodes.size() >= 5 
 				&& nodes.get(nodes.size() - 1).getType() == NodeType.BODY 
-				&& nodes.get(nodes.size() - 2).getType() == NodeType.SYMBOL
+				&& nodes.get(nodes.size() - 2).getType() == NodeType.TOKEN
 				&& nodes.get(nodes.size() - 2).getToken().getValue().equals(")") 
 				&& nodes.get(nodes.size() - 3).getType() == NodeType.BINARY_COMPARATOR 
-				&& nodes.get(nodes.size() - 4).getType() == NodeType.SYMBOL
+				&& nodes.get(nodes.size() - 4).getType() == NodeType.TOKEN
 				&&nodes.get(nodes.size() - 4).getToken().getValue().equals("(") 
 				&& nodes.get(nodes.size() - 5).getType() == NodeType.KEYWORD 
 				&& nodes.get(nodes.size() - 5).getToken().getValue().equals("if");

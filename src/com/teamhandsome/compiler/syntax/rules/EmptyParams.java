@@ -16,9 +16,9 @@ public class EmptyParams extends SyntaxRule{
 	@Override
 	public boolean isRule(List<SyntaxNode> nodes, SyntaxNode next) {
 		return nodes.size() >= SIZE && 
-				nodes.get(nodes.size() - 1).getType() == NodeType.SYMBOL && 
+				nodes.get(nodes.size() - 1).getType() == NodeType.TOKEN && 
 				nodes.get(nodes.size() - 1).getToken().getValue().equals(")") && 
-				nodes.get(nodes.size() - 2).getType() == NodeType.SYMBOL &&
+				nodes.get(nodes.size() - 2).getType() == NodeType.TOKEN &&
 				nodes.get(nodes.size() - 2).getToken().getValue().equals("(");
 	}
 

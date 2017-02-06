@@ -16,7 +16,7 @@ public class MultiDeclareVariableName extends SyntaxRule{
 	@Override
 	public boolean isRule(List<SyntaxNode> nodes, SyntaxNode next) {
 		return nodes.size() >= 3 && nodes.get(nodes.size() - 1).getType() == NodeType.VARIABLE_NAME
-                && nodes.get(nodes.size() - 2).getType() == NodeType.SYMBOL
+                && nodes.get(nodes.size() - 2).getType() == NodeType.TOKEN
                 && nodes.get(nodes.size() - 2).getToken().getValue().equals(",")
                 && nodes.get(nodes.size() - 3).getType() == NodeType.VARIABLE_NAME;
 	}

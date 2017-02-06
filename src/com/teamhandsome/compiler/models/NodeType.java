@@ -19,7 +19,7 @@ public enum NodeType
     MODIFIED_ASSIGNMENT,
     SEMICOLON,
     INCREMENTOR,
-    SYMBOL,
+    TOKEN,
     FORLOOP,
     WHILELOOP,
     IF,

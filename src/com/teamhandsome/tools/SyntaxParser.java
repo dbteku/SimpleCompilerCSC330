@@ -140,7 +140,7 @@ public class SyntaxParser {
 			node = new SyntaxNode(NodeType.COMPARATOR, token);
         }
         else{
-			node = new SyntaxNode(NodeType.SYMBOL, token);
+			node = new SyntaxNode(NodeType.TOKEN, token);
         }
 		return node;
 	}
