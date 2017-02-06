@@ -5,11 +5,11 @@ import java.util.List;
 import com.teamhandsome.compiler.models.NodeType;
 import com.teamhandsome.compiler.models.SyntaxNode;
 
-public class NamePerToMath extends SyntaxRule{
+public class NameParToMath extends SyntaxRule{
 
 	private static final int SIZE = 2;
 
-	public NamePerToMath() {
+	public NameParToMath() {
 
 	}
 
