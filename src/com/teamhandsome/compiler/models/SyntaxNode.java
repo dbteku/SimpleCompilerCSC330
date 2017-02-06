@@ -15,6 +15,8 @@ public class SyntaxNode {
 	
 	public SyntaxNode(NodeType type, Token token){
 		children = new ArrayList<>();
+		this.type = type;
+		this.token = token;
 	}
 
 	public void addNode(SyntaxNode node){
@@ -37,6 +39,11 @@ public class SyntaxNode {
 	
 	public boolean isNull(){
 		return type == NodeType.NULL;
+	}
+	
+	@Override
+	public String toString() {
+		return type.toString();
 	}
 	
 }

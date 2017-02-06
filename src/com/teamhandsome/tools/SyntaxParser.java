@@ -39,9 +39,7 @@ public class SyntaxParser {
 			}
 			nodes.add(currentNode);
 			reduce(nodes, nextNode);
-
 		}
-
 		return tree;
 	}
 
@@ -52,13 +50,13 @@ public class SyntaxParser {
 			node = convertNameToken(token);
 			break;
 		case NUMBER:
-			node = convertSymbol(token);
-			break;
-		case SPACE:
+			node = new SyntaxNode(NodeType.VALUE, token);
 			break;
 		case STRING:
+			node = new SyntaxNode(NodeType.VALUE, token);
 			break;
 		case SYMBOL:
+			node = convertSymbol(token);
 			break;
 		default:
 			break;
