@@ -8,6 +8,7 @@ import com.teamhandsome.compiler.models.NodeType;
 import com.teamhandsome.compiler.models.SyntaxNode;
 import com.teamhandsome.compiler.models.SyntaxTree;
 import com.teamhandsome.compiler.models.Token;
+import com.teamhandsome.compiler.syntax.rules.BinaryCompToBinaryCompStatement;
 import com.teamhandsome.compiler.syntax.rules.BodyToForLoop;
 import com.teamhandsome.compiler.syntax.rules.EmptyParams;
 import com.teamhandsome.compiler.syntax.rules.ForLoopStatement;
@@ -17,7 +18,10 @@ import com.teamhandsome.compiler.syntax.rules.If;
 import com.teamhandsome.compiler.syntax.rules.IfElse;
 import com.teamhandsome.compiler.syntax.rules.IfStatement;
 import com.teamhandsome.compiler.syntax.rules.IncrementorToModifiedAssignment;
+import com.teamhandsome.compiler.syntax.rules.MathOpToNestedMathOp;
+import com.teamhandsome.compiler.syntax.rules.MathOpToVariable;
 import com.teamhandsome.compiler.syntax.rules.MathOpVariableName;
+import com.teamhandsome.compiler.syntax.rules.MathOperation;
 import com.teamhandsome.compiler.syntax.rules.MathOperationParam;
 import com.teamhandsome.compiler.syntax.rules.MathOperationStatement;
 import com.teamhandsome.compiler.syntax.rules.MathOperationToBinaryComparison;
@@ -27,9 +31,11 @@ import com.teamhandsome.compiler.syntax.rules.MethodCallToMathOperation;
 import com.teamhandsome.compiler.syntax.rules.ModifiedAssignmentStatement;
 import com.teamhandsome.compiler.syntax.rules.MultiDeclareVariable;
 import com.teamhandsome.compiler.syntax.rules.NameParToMath;
+import com.teamhandsome.compiler.syntax.rules.NameToMathOperation;
 import com.teamhandsome.compiler.syntax.rules.ReturnStatement;
 import com.teamhandsome.compiler.syntax.rules.StatementToBody;
 import com.teamhandsome.compiler.syntax.rules.StatementToNestedStatement;
+import com.teamhandsome.compiler.syntax.rules.TypeToTypeArray;
 import com.teamhandsome.compiler.syntax.rules.TypeVariable;
 import com.teamhandsome.compiler.syntax.rules.TypedMathOperationBodyToFunction;
 import com.teamhandsome.compiler.syntax.rules.TypedVariableName;
@@ -66,7 +72,9 @@ public class SyntaxParser {
 				new WhileLoopStatement(), new IfStatement(), new MathOperationStatement(), new ModifiedAssignmentStatement(),
 				new MultiDeclareVariable(), new TypeVariable(), new MathVariable(), new TypedVariableName(),
 				new MultiDeclareVariable(), new MathOpVariableName(), new BodyToForLoop(), new If(), new IfElse(),
-				new WhileLoop(), new NameParToMath(), new ValueToMathOp()});
+				new WhileLoop(), new NameParToMath(), new ValueToMathOp(), new MathOperation(), new MathOpToNestedMathOp(),
+				new NameToMathOperation(), new TypeToTypeArray(), new MathOpToVariable(), new BinaryCompToBinaryCompStatement(),
+				});
 	}
 
 	public SyntaxTree toTree(List<Token> tokens){
