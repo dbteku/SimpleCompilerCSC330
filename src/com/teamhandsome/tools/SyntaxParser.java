@@ -33,6 +33,7 @@ import com.teamhandsome.compiler.syntax.rules.MethodCallToMathOperation;
 import com.teamhandsome.compiler.syntax.rules.ModAssignment;
 import com.teamhandsome.compiler.syntax.rules.ModifiedAssignmentStatement;
 import com.teamhandsome.compiler.syntax.rules.MultiDeclareVariable;
+import com.teamhandsome.compiler.syntax.rules.MultiDeclareVariableName;
 import com.teamhandsome.compiler.syntax.rules.NameParToMath;
 import com.teamhandsome.compiler.syntax.rules.NameToMathOperation;
 import com.teamhandsome.compiler.syntax.rules.ReturnStatement;
@@ -74,10 +75,10 @@ public class SyntaxParser {
 				new VariableStatement(), new VariableNameStatement(), new ForLoopStatement(), new ReturnStatement(),
 				new WhileLoopStatement(), new IfStatement(), new MathOperationStatement(), new ModifiedAssignmentStatement(),
 				new MultiDeclareVariable(), new TypeVariable(), new MathVariable(), new TypedVariableName(),
-				new MultiDeclareVariable(), new MathOpVariableName(), new BodyToForLoop(), new If(), new IfElse(),
+				new MultiDeclareVariableName(), new MathOpVariableName(), new BodyToForLoop(), new If(), new IfElse(),
 				new WhileLoop(), new NameParToMath(), new ValueToMathOp(), new MathOperation(), new MathOpToNestedMathOp(),
 				new NameToMathOperation(), new TypeToTypeArray(), new MathOpToVariable(), new BinaryCompToBinaryCompStatement(),
-				new Else(), new ModAssignment(), new MathOperatorToMathOperation()});
+				new ModAssignment(), new Else() , new MathOperatorToMathOperation()});
 	}
 
 	public SyntaxTree toTree(List<Token> tokens){
