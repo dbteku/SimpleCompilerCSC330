@@ -37,6 +37,8 @@ public class SyntaxParser {
 			if(i < tokens.size() - 1){
 				nextNode = convertNode(tokens.get(i + 1));
 			}
+			nodes.add(currentNode);
+			reduce(nodes, nextNode);
 
 		}
 
@@ -80,25 +82,22 @@ public class SyntaxParser {
 	private SyntaxNode convertSymbol(Token token){
 		SyntaxNode node = new SyntaxNode(NodeType.NULL);
 		if(isOperator(token.getValue())){
-			
+			node = new SyntaxNode(NodeType.OPERATOR, token);
 		}
 		else if(token.getValue().equalsIgnoreCase("=")){
-			
+			node = new SyntaxNode(NodeType.EQUALS, token);
 		}
         else if (token.getValue().equals(";")){
-
+			node = new SyntaxNode(NodeType.SEMICOLON, token);
         }
-        else if (isModifiedAssignment(token.getValue()))
-        {
-
+        else if (isModifiedAssignment(token.getValue())){
+			node = new SyntaxNode(NodeType.MODIFIED_ASSIGNMENT, token);
         }
-        else if (isComparator(token.getValue()))
-        {
-
+        else if (isComparator(token.getValue())){
+			node = new SyntaxNode(NodeType.COMPARATOR, token);
         }
-        else
-        {
-
+        else{
+			node = new SyntaxNode(NodeType.SYMBOL, token);
         }
 		return node;
 	}
@@ -161,6 +160,10 @@ public class SyntaxParser {
 			}
 		}
 		return isGrammar;
+	}
+	
+	private void reduce(List<SyntaxNode> nodes, SyntaxNode nextNode) {
+		
 	}
 
 }
