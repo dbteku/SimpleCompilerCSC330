@@ -18,12 +18,12 @@ public class BodyToForLoop extends SyntaxRule{
 		return nodes.size() >= 7 
 				&& nodes.get(nodes.size() - 7).getType() == NodeType.KEYWORD 
 				&& nodes.get(nodes.size() - 7).getToken().getValue().equals("for")
-                && nodes.get(nodes.size() - 6).getType() == NodeType.SYMBOL
+                && nodes.get(nodes.size() - 6).getType() == NodeType.TOKEN
                 &&nodes.get(nodes.size() - 6).getToken().getValue().equals("(")
                 && nodes.get(nodes.size() - 5).getType() == NodeType.STATEMENT
                 && nodes.get(nodes.size() - 4).getType() == NodeType.BINARY_COMP_STATEMENT
                 && nodes.get(nodes.size() - 3).getType() == NodeType.MODIFIED_ASSIGNMENT
-                && nodes.get(nodes.size() - 2).getType() == NodeType.SYMBOL 
+                && nodes.get(nodes.size() - 2).getType() == NodeType.TOKEN 
                 && nodes.get(nodes.size() - 2).getToken().getValue().equals(")")
                 && nodes.get(nodes.size() - 1).getType() == NodeType.BODY;
 	}

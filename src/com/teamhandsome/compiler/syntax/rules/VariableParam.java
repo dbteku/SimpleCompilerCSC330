@@ -16,10 +16,10 @@ public class VariableParam extends SyntaxRule{
 	@Override
 	public boolean isRule(List<SyntaxNode> nodes, SyntaxNode next) {
 		return nodes.size() >= 3 &&
-				nodes.get(nodes.size() - 1).getType() == NodeType.SYMBOL &&
+				nodes.get(nodes.size() - 1).getType() == NodeType.TOKEN &&
 				nodes.get(nodes.size() - 1).getToken().getValue().equals(")") &&
 				nodes.get(nodes.size() - 2).getType() == NodeType.VARIABLE &&
-				nodes.get(nodes.size() - 3).getType() == NodeType.SYMBOL &&
+				nodes.get(nodes.size() - 3).getType() == NodeType.TOKEN &&
 				nodes.get(nodes.size() - 3).getToken().getValue().equals("(");
 	}
 

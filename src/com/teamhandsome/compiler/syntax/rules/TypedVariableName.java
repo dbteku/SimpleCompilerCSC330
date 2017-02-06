@@ -18,7 +18,7 @@ public class TypedVariableName extends SyntaxRule{
 		return nodes.size() >= 2 
 				&& nodes.get(nodes.size() - 1).getType() == NodeType.NAME
                 && nodes.get(nodes.size() - 2).getType() == NodeType.TYPE 
-                && !(next.getType() == NodeType.SYMBOL && next.getToken().getValue().equals("("));
+                && !(next.getType() == NodeType.TOKEN && next.getToken().getValue().equals("("));
 	}
 
 	@Override
