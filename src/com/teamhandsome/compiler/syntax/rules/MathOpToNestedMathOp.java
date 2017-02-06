@@ -5,19 +5,20 @@ import java.util.List;
 import com.teamhandsome.compiler.models.NodeType;
 import com.teamhandsome.compiler.models.SyntaxNode;
 
-public class NamePerToMath extends SyntaxRule{
+public class MathOpToNestedMathOp extends SyntaxRule{
 
-	private static final int SIZE = 2;
+	private static final int SIZE = 3;
 
-	public NamePerToMath() {
+	public MathOpToNestedMathOp() {
 
 	}
 
 	@Override
 	public boolean isRule(List<SyntaxNode> nodes, SyntaxNode next) {
-		return nodes.size() >= 2 
-				&& nodes.get(nodes.size() - 1).getType() == NodeType.PARAMETER
-				&& nodes.get(nodes.size() - 2).getType() == NodeType.NAME;
+		return nodes.size() >= 3 
+				&& nodes.get(nodes.size() - 1).getType() == NodeType.MATH_OPERATION 
+				&& nodes.get(nodes.size() - 1).getType() == NodeType.OPERATOR 
+				&& nodes.get(nodes.size() - 1).getType() == NodeType.MATH_OPERATION;
 	}
 
 	@Override
