@@ -119,7 +119,7 @@ public class SyntaxParser {
 		}
 		return node;
 	}
-	
+
 	private SyntaxNode convertNameToken(Token token){
 		SyntaxNode node = new SyntaxNode(NodeType.NULL);
 		if(isType(token.getValue())){
@@ -132,7 +132,7 @@ public class SyntaxParser {
 		}
 		return node;
 	}
-	
+
 	private SyntaxNode convertSymbol(Token token){
 		SyntaxNode node = new SyntaxNode(NodeType.NULL);
 		if(isOperator(token.getValue())){
@@ -141,18 +141,18 @@ public class SyntaxParser {
 		else if(token.getValue().equalsIgnoreCase("=")){
 			node = new SyntaxNode(NodeType.EQUALS, token);
 		}
-        else if (token.getValue().equals(";")){
+		else if (token.getValue().equals(";")){
 			node = new SyntaxNode(NodeType.SEMICOLON, token);
-        }
-        else if (isModifiedAssignment(token.getValue())){
+		}
+		else if (isModifiedAssignment(token.getValue())){
 			node = new SyntaxNode(NodeType.MODIFIED_ASSIGNMENT, token);
-        }
-        else if (isComparator(token.getValue())){
+		}
+		else if (isComparator(token.getValue())){
 			node = new SyntaxNode(NodeType.COMPARATOR, token);
-        }
-        else{
+		}
+		else{
 			node = new SyntaxNode(NodeType.TOKEN, token);
-        }
+		}
 		return node;
 	}
 
@@ -167,7 +167,7 @@ public class SyntaxParser {
 		}
 		return isGrammar;
 	}
-	
+
 	private boolean isKeyWord(String value){
 		boolean isGrammar = false;
 		for (int i = 0; i < KEYWORDS.size(); i++) {
@@ -179,7 +179,7 @@ public class SyntaxParser {
 		}
 		return isGrammar;
 	}
-	
+
 	private boolean isOperator(String value){
 		boolean isGrammar = false;
 		for (int i = 0; i < OPERATORS.size(); i++) {
@@ -191,7 +191,7 @@ public class SyntaxParser {
 		}
 		return isGrammar;
 	}
-	
+
 	private boolean isComparator(String value) {
 		boolean isGrammar = false;
 		for (int i = 0; i < COMPARATORS.size(); i++) {
@@ -215,27 +215,34 @@ public class SyntaxParser {
 		}
 		return isGrammar;
 	}
-	
-    private SyntaxNode constructNode(NodeType type, int pieces, List<SyntaxNode> list)
-    {
-        SyntaxNode retVal = new SyntaxNode(type);
-        for(int i = pieces; i > 0;  i--)
-        {
-            retVal.addNode(list.get(list.size() - i));
-        }
-        for (int i = pieces; i > 0; i--)
-        {
-            list.remove(list.size() - i);
-        }
-        return retVal;
-    }
-	
+
+	private SyntaxNode constructNode(NodeType type, int pieces, List<SyntaxNode> list)
+	{
+		SyntaxNode retVal = new SyntaxNode(type);
+		for(int i = pieces; i > 0;  i--)
+		{
+			retVal.addNode(list.get(list.size() - i));
+		}
+		for (int i = pieces; i > 0; i--)
+		{
+			list.remove(list.size() - i);
+		}
+		return retVal;
+	}
+
 	private void reduce(List<SyntaxNode> nodes, SyntaxNode nextNode) {
 		boolean reduce = true;
 		while(reduce){
 			reduce = false;
-			
+			for (int i = 0; i < RULES.size(); i++) {
+				IRule rule = RULES.get(i);
+				if(rule.isRule(nodes, nextNode)){
+					reduce = true;
+					SyntaxNode node = rule.applyRule(nodes);
+					nodes.add(node);
+					i = RULES.size();
+				}
+			}
 		}
 	}
-
 }
