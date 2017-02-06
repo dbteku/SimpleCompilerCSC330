@@ -10,6 +10,7 @@ import com.teamhandsome.compiler.models.SyntaxTree;
 import com.teamhandsome.compiler.models.Token;
 import com.teamhandsome.compiler.syntax.rules.BinaryCompToBinaryCompStatement;
 import com.teamhandsome.compiler.syntax.rules.BodyToForLoop;
+import com.teamhandsome.compiler.syntax.rules.Else;
 import com.teamhandsome.compiler.syntax.rules.EmptyParams;
 import com.teamhandsome.compiler.syntax.rules.ForLoopStatement;
 import com.teamhandsome.compiler.syntax.rules.FunctionToNestedFunction;
@@ -25,9 +26,11 @@ import com.teamhandsome.compiler.syntax.rules.MathOperation;
 import com.teamhandsome.compiler.syntax.rules.MathOperationParam;
 import com.teamhandsome.compiler.syntax.rules.MathOperationStatement;
 import com.teamhandsome.compiler.syntax.rules.MathOperationToBinaryComparison;
+import com.teamhandsome.compiler.syntax.rules.MathOperatorToMathOperation;
 import com.teamhandsome.compiler.syntax.rules.MathVariable;
 import com.teamhandsome.compiler.syntax.rules.MethodCall;
 import com.teamhandsome.compiler.syntax.rules.MethodCallToMathOperation;
+import com.teamhandsome.compiler.syntax.rules.ModAssignment;
 import com.teamhandsome.compiler.syntax.rules.ModifiedAssignmentStatement;
 import com.teamhandsome.compiler.syntax.rules.MultiDeclareVariable;
 import com.teamhandsome.compiler.syntax.rules.NameParToMath;
@@ -74,7 +77,7 @@ public class SyntaxParser {
 				new MultiDeclareVariable(), new MathOpVariableName(), new BodyToForLoop(), new If(), new IfElse(),
 				new WhileLoop(), new NameParToMath(), new ValueToMathOp(), new MathOperation(), new MathOpToNestedMathOp(),
 				new NameToMathOperation(), new TypeToTypeArray(), new MathOpToVariable(), new BinaryCompToBinaryCompStatement(),
-				});
+				new Else(), new ModAssignment(), new MathOperatorToMathOperation()});
 	}
 
 	public SyntaxTree toTree(List<Token> tokens){
