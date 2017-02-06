@@ -5,15 +5,19 @@ public class SyntaxTree {
 	private SyntaxNode root;
 
 	public SyntaxTree() {
-		root = null;
+		this(null);
 	}
-
-	public void setRoot(SyntaxNode root) {
+	
+	public SyntaxTree(SyntaxNode root) {
 		this.root = root;
 	}
 	
 	public SyntaxNode getRoot() {
 		return root;
+	}
+	
+	public boolean isEmpty(){
+		return root == null;
 	}
 
 }

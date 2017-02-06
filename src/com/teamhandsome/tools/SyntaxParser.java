@@ -160,20 +160,6 @@ public class SyntaxParser {
 		return isGrammar;
 	}
 	
-    private SyntaxNode constructNode(NodeType type, int pieces, List<SyntaxNode> list)
-    {
-    	SyntaxNode retVal = new SyntaxNode(type);
-        for(int i = pieces; i > 0;  i--)
-        {
-            retVal.addNode((list.get(list.size() - i)));
-        }
-        for (int i = pieces; i > 0; i--)
-        {
-            list.remove(list.size() - i);
-        }
-        return retVal;
-    }
-	
 	private void reduce(List<SyntaxNode> nodes, SyntaxNode nextNode) {
 		
 	}
