@@ -37,8 +37,11 @@ public class SyntaxParser {
 			if(i < tokens.size() - 1){
 				nextNode = convertNode(tokens.get(i + 1));
 			}
+			if(i == 153){
+				System.out.println();
+			}
 			nodes.add(currentNode);
-			reduce(nodes, nextNode);
+			//reduce(nodes, nextNode);
 		}
 		return tree;
 	}

@@ -28,6 +28,8 @@ public class Tokenizer {
 	private final int SPACE = 32;
 	private final int NEW_LINE = 10;
 	private final int TAB = 11;
+	private final String PRIVATE = "private";
+	private final String PUBLIC = "public";
 	private TokenType state;
 	private int index;
 
@@ -79,8 +81,10 @@ public class Tokenizer {
 
 	private void addTokenToList(CharBuffer buffer, List<Token> tokens){
 		if(!buffer.isEmpty()){
-			tokens.add(toToken(state, buffer));
-			buffer.clear();
+			if(!buffer.toString().equalsIgnoreCase(PRIVATE) && !buffer.toString().equalsIgnoreCase(PUBLIC)){
+				tokens.add(toToken(state, buffer));
+				buffer.clear();	
+			}
 		}
 	}
 
