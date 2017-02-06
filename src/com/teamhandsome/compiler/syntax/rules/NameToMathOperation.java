@@ -18,7 +18,7 @@ public class NameToMathOperation extends SyntaxRule{
 		return nodes.size() >= 2 
 				&& nodes.get(nodes.size() - 1).getType() == NodeType.NAME 
 				&& !next.getToken().getValue().equals("(") 
-				&& !(nodes.get(nodes.size() - 2).getType() == NodeType.SYMBOL
+				&& !(nodes.get(nodes.size() - 2).getType() == NodeType.TOKEN
 				&& nodes.get(nodes.size() - 2).getToken().getValue().equals(",")) 
 				&& next.getType() != NodeType.INCREMENTOR 
 				&& next.getType() != NodeType.EQUALS;
