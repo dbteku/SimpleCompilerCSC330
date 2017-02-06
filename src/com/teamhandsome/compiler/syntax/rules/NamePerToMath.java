@@ -16,13 +16,13 @@ public class NamePerToMath extends SyntaxRule{
 	@Override
 	public boolean isRule(List<SyntaxNode> nodes, SyntaxNode next) {
 		return nodes.size() >= 2 
-				&& nodes.get(nodes.size() - 1).getType() == NodeType.ELSE 
-				&& nodes.get(nodes.size() - 2).getType() == NodeType.IF;
+				&& nodes.get(nodes.size() - 1).getType() == NodeType.PARAMETER
+				&& nodes.get(nodes.size() - 2).getType() == NodeType.NAME;
 	}
 
 	@Override
 	public SyntaxNode applyRule(List<SyntaxNode> nodes) {
-		return constructNode(NodeType.IF, SIZE, nodes);
+		return constructNode(NodeType.MATH_OPERATION, SIZE, nodes);
 	}
 
 }
