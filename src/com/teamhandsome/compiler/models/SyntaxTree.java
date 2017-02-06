@@ -19,5 +19,10 @@ public class SyntaxTree {
 	public boolean isEmpty(){
 		return root == null;
 	}
+	
+	@Override
+	public String toString() {
+		return root.toString();
+	}
 
 }

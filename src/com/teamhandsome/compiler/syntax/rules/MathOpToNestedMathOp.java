@@ -17,8 +17,8 @@ public class MathOpToNestedMathOp extends SyntaxRule{
 	public boolean isRule(List<SyntaxNode> nodes, SyntaxNode next) {
 		return nodes.size() >= 3 
 				&& nodes.get(nodes.size() - 1).getType() == NodeType.MATH_OPERATION 
-				&& nodes.get(nodes.size() - 1).getType() == NodeType.OPERATOR 
-				&& nodes.get(nodes.size() - 1).getType() == NodeType.MATH_OPERATION;
+				&& nodes.get(nodes.size() - 2).getType() == NodeType.OPERATOR 
+				&& nodes.get(nodes.size() - 3).getType() == NodeType.MATH_OPERATION;
 	}
 
 	@Override

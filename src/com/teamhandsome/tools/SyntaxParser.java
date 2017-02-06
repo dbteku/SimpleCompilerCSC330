@@ -49,6 +49,7 @@ import com.teamhandsome.compiler.syntax.rules.VariableParam;
 import com.teamhandsome.compiler.syntax.rules.VariableStatement;
 import com.teamhandsome.compiler.syntax.rules.WhileLoop;
 import com.teamhandsome.compiler.syntax.rules.WhileLoopStatement;
+import com.teamhandsome.exceptions.InvalidSyntaxException;
 import com.teamhandsome.grammar.KeyWord;
 import com.teamhandsome.interfaces.IGrammar;
 import com.teamhandsome.interfaces.IRule;
@@ -81,7 +82,7 @@ public class SyntaxParser {
 				new ModAssignment(), new Else() , new MathOperatorToMathOperation()});
 	}
 
-	public SyntaxTree toTree(List<Token> tokens){
+	public SyntaxTree toTree(List<Token> tokens) throws InvalidSyntaxException{
 		SyntaxTree tree = new SyntaxTree();
 		List<SyntaxNode> nodes = new ArrayList<>();
 		SyntaxNode currentNode = new SyntaxNode(NodeType.NULL);
@@ -94,6 +95,11 @@ public class SyntaxParser {
 			}
 			nodes.add(currentNode);
 			reduce(nodes, nextNode);
+		}
+		if(nodes.size() == 1){
+			tree = new SyntaxTree(nodes.get(0));
+		}else{
+			throw new InvalidSyntaxException();
 		}
 		return tree;
 	}
