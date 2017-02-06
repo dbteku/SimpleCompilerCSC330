@@ -8,6 +8,7 @@ import com.teamhandsome.compiler.models.NodeType;
 import com.teamhandsome.compiler.models.SyntaxNode;
 import com.teamhandsome.compiler.models.SyntaxTree;
 import com.teamhandsome.compiler.models.Token;
+import com.teamhandsome.compiler.syntax.rules.BinaryCompToBinaryCompStatement;
 import com.teamhandsome.compiler.syntax.rules.BodyToForLoop;
 import com.teamhandsome.compiler.syntax.rules.EmptyParams;
 import com.teamhandsome.compiler.syntax.rules.ForLoopStatement;
@@ -18,6 +19,7 @@ import com.teamhandsome.compiler.syntax.rules.IfElse;
 import com.teamhandsome.compiler.syntax.rules.IfStatement;
 import com.teamhandsome.compiler.syntax.rules.IncrementorToModifiedAssignment;
 import com.teamhandsome.compiler.syntax.rules.MathOpToNestedMathOp;
+import com.teamhandsome.compiler.syntax.rules.MathOpToVariable;
 import com.teamhandsome.compiler.syntax.rules.MathOpVariableName;
 import com.teamhandsome.compiler.syntax.rules.MathOperation;
 import com.teamhandsome.compiler.syntax.rules.MathOperationParam;
@@ -71,7 +73,8 @@ public class SyntaxParser {
 				new MultiDeclareVariable(), new TypeVariable(), new MathVariable(), new TypedVariableName(),
 				new MultiDeclareVariable(), new MathOpVariableName(), new BodyToForLoop(), new If(), new IfElse(),
 				new WhileLoop(), new NameParToMath(), new ValueToMathOp(), new MathOperation(), new MathOpToNestedMathOp(),
-				new NameToMathOperation(), new TypeToTypeArray()});
+				new NameToMathOperation(), new TypeToTypeArray(), new MathOpToVariable(), new BinaryCompToBinaryCompStatement(),
+				});
 	}
 
 	public SyntaxTree toTree(List<Token> tokens){
