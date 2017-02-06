@@ -7,8 +7,13 @@ public class SyntaxNode {
 
 	private List<SyntaxNode> children;
 	private NodeType type;
+	private Token token;
 	
 	public SyntaxNode(NodeType type) {
+		this(type, null);
+	}
+	
+	public SyntaxNode(NodeType type, Token token){
 		children = new ArrayList<>();
 	}
 
@@ -16,6 +21,14 @@ public class SyntaxNode {
 		if(!children.contains(node)){
 			this.children.add(node);
 		}
+	}
+	
+	public Token getToken() {
+		Token token = new Token("", TokenType.SPACE);
+		if(this.token != null){
+			token = this.token;
+		}
+		return token;
 	}
 	
 	public NodeType getType() {
