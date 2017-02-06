@@ -13,6 +13,8 @@ import com.teamhandsome.compiler.syntax.rules.EmptyParams;
 import com.teamhandsome.compiler.syntax.rules.ForLoopStatement;
 import com.teamhandsome.compiler.syntax.rules.FunctionToNestedFunction;
 import com.teamhandsome.compiler.syntax.rules.FunctionToProgram;
+import com.teamhandsome.compiler.syntax.rules.If;
+import com.teamhandsome.compiler.syntax.rules.IfElse;
 import com.teamhandsome.compiler.syntax.rules.IfStatement;
 import com.teamhandsome.compiler.syntax.rules.IncrementorToModifiedAssignment;
 import com.teamhandsome.compiler.syntax.rules.MathOpVariableName;
@@ -60,7 +62,8 @@ public class SyntaxParser {
 				new VariableStatement(), new VariableNameStatement(), new ForLoopStatement(), new ReturnStatement(),
 				new WhileLoopStatement(), new IfStatement(), new MathOperationStatement(), new ModifiedAssignmentStatement(),
 				new MultiDeclareVariable(), new TypeVariable(), new MathVariable(), new TypedVariableName(),
-				new MultiDeclareVariable(), new MathOpVariableName(), new BodyToForLoop()});
+				new MultiDeclareVariable(), new MathOpVariableName(), new BodyToForLoop(), new If(), new IfElse(),
+				});
 	}
 
 	public SyntaxTree toTree(List<Token> tokens){
@@ -215,7 +218,324 @@ public class SyntaxParser {
 		boolean reduce = true;
 		while(reduce){
 			reduce = false;
+			if (nodes.size() >= 2 && nodes.get(nodes.size() - 1).getType() == NodeType.FUNCTION && nodes.get(nodes.size() - 2).getType() == NodeType.FUNCTION)
+            {
+                reduce = true;
+                //example conversion to the line below
+                //
+                //TreeNode function = new TreeNode(NodeType.FUNCTION);
+                //function.children.Add(nodes.get(nodes.size() - 2));
+                //function.children.Add(nodes.get(nodes.size() - 1));
+                //nodes.RemoveAt(nodes.size() - 2);
+                //nodes.RemoveAt(nodes.size() - 1);
+                //
+                //nodes.add(function);
 
+                nodes.add(constructNode(NodeType.FUNCTION, 2, nodes));
+            }
+            //Pr -> F
+            else if (nodes.get(nodes.size() - 1).getType() == NodeType.FUNCTION && nextNode.getType() == NodeType.NULL)
+            {
+                reduce = true;
+
+                ////Create new node
+                //TreeNode program = new TreeNode(NodeType.PROGRAM);
+
+                ////Add children to parent left(lowest index) to right(highest index)
+                //program.children.Add(nodes.get(nodes.size() - 1));
+
+                ////Remove children nodes from nodes
+                //nodes.RemoveAt(nodes.size() - 1);
+
+                ////add parent to nodes
+                //nodes.add(program);
+
+                nodes.add(constructNode(NodeType.PROGRAM, 1, nodes));
+            }
+            //F -> TMoB
+            else if (nodes.size() >= 3 && nodes.get(nodes.size() - 1).getType() == NodeType.BODY && nodes.get(nodes.size() - 2).getType() == NodeType.MATH_OPERATION
+                 && nodes.get(nodes.size() - 3).getType() == NodeType.TYPE)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.FUNCTION, 3, nodes));
+            }
+            //P -> (V)
+            else if (nodes.size() >= 3 && nodes.get(nodes.size() - 1).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 1).getToken().getValue().equals(")")
+                && nodes.get(nodes.size() - 2).getType() == NodeType.VARIABLE && nodes.get(nodes.size() - 3).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 3).getToken().getValue().equals("("))
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.PARAMETER, 3, nodes));
+            }
+            //P -> ()
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 1).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 1).getToken().getValue().equals(")") && nodes.get(nodes.size() - 2).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 2).getToken().getValue().equals("("))
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.PARAMETER, 2, nodes));
+            }
+            // P -> (Mo)
+            else if (
+                nodes.size() >= 4 && nodes.get(nodes.size() - 3).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 3).getToken().getValue().equals("(")
+                && nodes.get(nodes.size() - 2).getType() == NodeType.MATH_OPERATION
+                && nodes.get(nodes.size() - 1).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 1).getToken().getValue().equals(")")
+                && nodes.get(nodes.size() - 4).getType() == NodeType.NAME)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.PARAMETER, 3, nodes));
+            }
+
+            //MC -> NP
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 1).getType() == NodeType.PARAMETER && nodes.get(nodes.size() - 2).getType() == NodeType.NAME)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.METHOD_CALL, 2, nodes));
+            }
+            //Mo -> MC
+            else if (nodes.get(nodes.size() - 1).getType() == NodeType.METHOD_CALL)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.MATH_OPERATION, 1, nodes));
+            }
+            //Ma -> N I
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 1).getType() == NodeType.INCREMENTOR && nodes.get(nodes.size() - 2).getType() == NodeType.NAME)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.MODIFIED_ASSIGNMENT, 2, nodes));
+            }
+            //Bc -> Mo C Mo
+            else if (nodes.size() >= 3 && nodes.get(nodes.size() - 1).getType() == NodeType.MATH_OPERATION && nodes.get(nodes.size() - 2).getType() == NodeType.COMPARATOR
+              && nodes.get(nodes.size() - 3).getType() == NodeType.MATH_OPERATION)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.BINARY_COMPARATOR, 3, nodes));
+            }
+            //B -> {S}
+            else if (nodes.size() >= 3 && nodes.get(nodes.size() - 1).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 1).getToken().getValue().equals("}")
+                && nodes.get(nodes.size() - 2).getType() == NodeType.STATEMENT && nodes.get(nodes.size() - 3).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 3).getToken().getValue().equals("{"))
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.BODY, 3, nodes));
+            }
+            //S -> SS
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 1).getType() == NodeType.STATEMENT && nodes.get(nodes.size() - 2).getType() == NodeType.STATEMENT)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.STATEMENT, 2, nodes));
+            }
+            //S -> V;
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 1).getType() == NodeType.SEMICOLON && nodes.get(nodes.size() - 2).getType() == NodeType.VARIABLE)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.STATEMENT, 2, nodes));
+            }
+
+            //RETHINK THIS ONE
+            //S -> Vn;
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 1).getType() == NodeType.SEMICOLON && nodes.get(nodes.size() - 2).getType() == NodeType.VARIABLE_NAME)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.STATEMENT, 2, nodes));
+            }
+            //S -> For
+            else if (nodes.get(nodes.size() - 1).getType() == NodeType.FORLOOP)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.STATEMENT, 1, nodes));
+            }
+            //S -> return Mo;
+            else if (nodes.size() >= 3 && nodes.get(nodes.size() - 1).getType() == NodeType.SEMICOLON && nodes.get(nodes.size() - 2).getType() == NodeType.MATH_OPERATION &&
+              nodes.get(nodes.size() - 3).getType() == NodeType.KEYWORD && nodes.get(nodes.size() - 3).getToken().getValue().equals("return"))
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.STATEMENT, 3, nodes));
+            }
+            //S -> While
+            else if (nodes.get(nodes.size() - 1).getType() == NodeType.WHILELOOP)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.STATEMENT, 1, nodes));
+            }
+            //S -> If
+            else if (nodes.get(nodes.size() - 1).getType() == NodeType.IF && !(nextNode.getType() == NodeType.KEYWORD && nextNode.getToken().getValue().equals("else")))
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.STATEMENT, 1, nodes));
+            }
+            //S -> Mo;
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 1).getType() == NodeType.SEMICOLON && nodes.get(nodes.size() - 2).getType() == NodeType.MATH_OPERATION)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.STATEMENT, 2, nodes));
+            }
+            //S -> Ma;
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 1).getType() == NodeType.SEMICOLON && nodes.get(nodes.size() - 2).getType() == NodeType.MODIFIED_ASSIGNMENT)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.STATEMENT, 2, nodes));
+            }
+            //V -> V, N
+            else if (nodes.size() >= 3 && nodes.get(nodes.size() - 3).getType() == NodeType.VARIABLE
+                && nodes.get(nodes.size() - 2).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 2).getToken().getValue().equals(",")
+                && nodes.get(nodes.size() - 1).getType() == NodeType.NAME)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.VARIABLE, 3, nodes));
+            }
+            //V -> TVn
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 1).getType() == NodeType.VARIABLE_NAME
+                && nodes.get(nodes.size() - 2).getType() == NodeType.TYPE)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.VARIABLE, 2, nodes));
+            }
+            //V -> N E Mo
+            else if (nodes.size() >= 3 && nodes.get(nodes.size() - 1).getType() == NodeType.MATH_OPERATION
+               && nodes.get(nodes.size() - 2).getType() == NodeType.EQUALS && nodes.get(nodes.size() - 3).getType() == NodeType.NAME && nextNode.getType() != NodeType.OPERATOR)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.VARIABLE, 3, nodes));
+            }
+            //Vn->TN //check to see if its type into name but only remove name
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 1).getType() == NodeType.NAME
+               && nodes.get(nodes.size() - 2).getType() == NodeType.TYPE && !(nextNode.getType() == NodeType.SYMBOL && nextNode.getToken().getValue().equals("(")))
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.VARIABLE_NAME, 1, nodes));
+            }
+            //Vn->Vn, Vn
+            else if (nodes.size() >= 3 && nodes.get(nodes.size() - 1).getType() == NodeType.VARIABLE_NAME
+            && nodes.get(nodes.size() - 2).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 2).getToken().getValue().equals(",")
+            && nodes.get(nodes.size() - 3).getType() == NodeType.VARIABLE_NAME)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.VARIABLE_NAME, 3, nodes));
+            }
+            //Vn-> *T* N E Mo
+            else if (nodes.size() >= 4 && nodes.get(nodes.size() - 1).getType() == NodeType.MATH_OPERATION
+          && nodes.get(nodes.size() - 2).getType() == NodeType.EQUALS && nodes.get(nodes.size() - 3).getType() == NodeType.NAME
+          && nodes.get(nodes.size() - 4).getType() == NodeType.TYPE)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.VARIABLE_NAME, 3, nodes));
+            }
+            //for -> "for" (S BCS Ma) B
+            else if (nodes.size() >= 7 && nodes.get(nodes.size() - 7).getType() == NodeType.KEYWORD && nodes.get(nodes.size() - 7).getToken().getValue().equals("for")
+                && nodes.get(nodes.size() - 6).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 6).getToken().getValue().equals("(")
+                && nodes.get(nodes.size() - 5).getType() == NodeType.STATEMENT
+                && nodes.get(nodes.size() - 4).getType() == NodeType.BINARY_COMP_STATEMENT
+                && nodes.get(nodes.size() - 3).getType() == NodeType.MODIFIED_ASSIGNMENT
+                && nodes.get(nodes.size() - 2).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 2).getToken().getValue().equals(")")
+                && nodes.get(nodes.size() - 1).getType() == NodeType.BODY)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.FORLOOP, 7, nodes));
+            }
+            //if -> "if" (Bc) B
+            else if (nodes.size() >= 5 && nodes.get(nodes.size() - 1).getType() == NodeType.BODY && nodes.get(nodes.size() - 2).getType() == NodeType.SYMBOL &&
+            nodes.get(nodes.size() - 2).getToken().getValue().equals(")") && nodes.get(nodes.size() - 3).getType() == NodeType.BINARY_COMPARATOR &&
+            nodes.get(nodes.size() - 4).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 4).getToken().getValue().equals("(") &&
+            nodes.get(nodes.size() - 5).getType() == NodeType.KEYWORD && nodes.get(nodes.size() - 5).getToken().getValue().equals("if"))
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.IF, 5, nodes));
+            }
+            //S -> IF ELSE
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 1).getType() == NodeType.ELSE && nodes.get(nodes.size() - 2).getType() == NodeType.IF)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.IF, 2, nodes));
+            }
+            //While -> "While" (BC) B
+            else if (nodes.size() >= 5 && nodes.get(nodes.size() - 1).getType() == NodeType.BODY && nodes.get(nodes.size() - 2).getType() == NodeType.SYMBOL &&
+                nodes.get(nodes.size() - 2).getToken().getValue().equals(")") && nodes.get(nodes.size() - 3).getType() == NodeType.BINARY_COMPARATOR &&
+                nodes.get(nodes.size() - 4).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 4).getToken().getValue().equals("(") &&
+                nodes.get(nodes.size() - 5).getType() == NodeType.KEYWORD && nodes.get(nodes.size() - 5).getToken().getValue().equals("while"))
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.WHILELOOP, 5, nodes));
+            }
+            //Mo -> NP
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 1).getType() == NodeType.PARAMETER && nodes.get(nodes.size() - 2).getType() == NodeType.NAME)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.MATH_OPERATION, 2, nodes));
+            }
+            //Mo -> Val
+            else if (nodes.get(nodes.size() - 1).getType() == NodeType.VALUE)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.MATH_OPERATION, 1, nodes));
+            }
+            //Mo -> (Mo)
+            else if (nodes.size() >= 3 && nodes.get(nodes.size() - 1).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 1).getToken().getValue().equals(")")
+                && nodes.get(nodes.size() - 2).getType() == NodeType.MATH_OPERATION && nodes.get(nodes.size() - 3).getType() == NodeType.SYMBOL
+                && nodes.get(nodes.size() - 3).getToken().getValue().equals("("))
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.MATH_OPERATION, 3, nodes));
+            }
+            //Mo -> Mo Op Mo
+            else if (nodes.size() >= 3 && nodes.get(nodes.size() - 1).getType() == NodeType.MATH_OPERATION &&
+                nodes.get(nodes.size() - 2).getType() == NodeType.OPERATOR && nodes.get(nodes.size() - 3).getType() == NodeType.MATH_OPERATION)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.MATH_OPERATION, 3, nodes));
+            }
+            //Mo -> N
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 1).getType() == NodeType.NAME && !nextNode.getToken().getValue().equals("(") && !(nodes.get(nodes.size() - 2).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 2).getToken().getValue().equals(",")) && nextNode.getType() != NodeType.INCREMENTOR && nextNode.getType() != NodeType.EQUALS)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.MATH_OPERATION, 1, nodes));
+            }
+            //T -> T[)
+            else if (nodes.size() >= 3 && nodes.get(nodes.size() - 1).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 1).getToken().getValue().equals(")") && nodes.get(nodes.size() - 2).getType() == NodeType.SYMBOL && nodes.get(nodes.size() - 2).getToken().getValue().equals("[") && nodes.get(nodes.size() - 3).getType() == NodeType.TYPE)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.TYPE, 3, nodes));
+            }
+            //Vn -> V = Mo
+            else if (nodes.size() >= 3 && nodes.get(nodes.size() - 3).getType() == NodeType.VARIABLE
+                && nodes.get(nodes.size() - 2).getType() == NodeType.EQUALS && nodes.get(nodes.size() - 1).getType() == NodeType.MATH_OPERATION)
+            {
+                reduce = true;
+                NodeType type = NodeType.NULL;
+                //Variable Name
+                if (nodes.get(nodes.size() - 4).getType() == NodeType.TYPE)
+                {
+                    type = NodeType.VARIABLE_NAME;
+
+                }
+                else
+                {
+                    type = NodeType.VARIABLE;
+                }
+
+                nodes.add(constructNode(type, 3, nodes));
+            }
+            //BCS -> Bc;
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 2).getType() == NodeType.BINARY_COMPARATOR && nodes.get(nodes.size() - 1).getType() == NodeType.SEMICOLON)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.BINARY_COMP_STATEMENT, 2, nodes));
+            }
+            //Ma -> NI
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 2).getType() == NodeType.NAME && nodes.get(nodes.size() - 1).getType() == NodeType.INCREMENTOR)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.MODIFIED_ASSIGNMENT, 2, nodes));
+            }
+            //ELSE -> "else" B 
+            else if (nodes.size() >= 2 && nodes.get(nodes.size() - 2).getType() == NodeType.KEYWORD && nodes.get(nodes.size() - 2).getToken().getValue().equals("else") && nodes.get(nodes.size() - 1).getType() == NodeType.BODY)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.ELSE, 2, nodes));
+            }
+            //Mo -> - Mo
+            else if(nodes.size() >= 2 && nodes.get(nodes.size() - 2).getType() == NodeType.OPERATOR && nodes.get(nodes.size() - 2).getToken().getValue().equals("-")
+                && nodes.get(nodes.size() - 1).getType() == NodeType.MATH_OPERATION)
+            {
+                reduce = true;
+                nodes.add(constructNode(NodeType.MATH_OPERATION, 2, nodes));
+            }
 		}
 	}
 

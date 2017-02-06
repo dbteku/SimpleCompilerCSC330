@@ -84,6 +84,8 @@ public class Tokenizer {
 			if(!buffer.toString().equalsIgnoreCase(PRIVATE) && !buffer.toString().equalsIgnoreCase(PUBLIC)){
 				tokens.add(toToken(state, buffer));
 				buffer.clear();	
+			}else{
+				buffer.clear();
 			}
 		}
 	}
