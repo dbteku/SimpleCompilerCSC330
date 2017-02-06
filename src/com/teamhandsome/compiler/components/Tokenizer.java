@@ -57,8 +57,6 @@ public class Tokenizer {
 
 	private void switchOnState(char c, char[] chars, CharBuffer buffer, List<Token> tokens){
 		switch(state){
-		case ESCAPE:
-			break;
 		case NAME:
 			nameState(c, chars, buffer, tokens);
 			break;

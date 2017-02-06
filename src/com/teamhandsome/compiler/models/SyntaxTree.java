@@ -2,20 +2,18 @@ package com.teamhandsome.compiler.models;
 
 public class SyntaxTree {
 
-	private TreeNode root;
-	
+	private SyntaxNode root;
+
 	public SyntaxTree() {
 		root = null;
 	}
-	
-	public void addNode(TreeNode node){
-		if(root == null){
-			root = node;
-		}
+
+	public void setRoot(SyntaxNode root) {
+		this.root = root;
 	}
 	
-	public boolean isEmpty(){
-		return root == null;
+	public SyntaxNode getRoot() {
+		return root;
 	}
-	
+
 }
