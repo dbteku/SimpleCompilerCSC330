@@ -93,8 +93,6 @@ public class SyntaxParser {
 				nextNode = convertNode(tokens.get(i + 1));
 			}
 			nodes.add(currentNode);
-			if(i == 6)
-				System.out.println();
 			reduce(nodes, nextNode);
 		}
 		return tree;
@@ -146,7 +144,7 @@ public class SyntaxParser {
 			node = new SyntaxNode(NodeType.SEMICOLON, token);
 		}
 		else if (isModifiedAssignment(token.getValue())){
-			node = new SyntaxNode(NodeType.MODIFIED_ASSIGNMENT, token);
+			node = new SyntaxNode(NodeType.INCREMENTOR, token);
 		}
 		else if (isComparator(token.getValue())){
 			node = new SyntaxNode(NodeType.COMPARATOR, token);
@@ -215,20 +213,6 @@ public class SyntaxParser {
 			}
 		}
 		return isGrammar;
-	}
-
-	private SyntaxNode constructNode(NodeType type, int pieces, List<SyntaxNode> list)
-	{
-		SyntaxNode retVal = new SyntaxNode(type);
-		for(int i = pieces; i > 0;  i--)
-		{
-			retVal.addNode(list.get(list.size() - i));
-		}
-		for (int i = pieces; i > 0; i--)
-		{
-			list.remove(list.size() - i);
-		}
-		return retVal;
 	}
 
 	private void reduce(List<SyntaxNode> nodes, SyntaxNode nextNode) {
