@@ -25,6 +25,11 @@ public class Tokenizer {
 	private final int ASCII_NUMBER_END = 57;
 	private final int PERIOD = 46;
 	private final int QUOTE = 34;
+	private final int GREATER_THAN = 62;
+	private final int LESS_THAN = 60;
+	private final int EQUALS = 61;
+	private final int PLUS = 43;
+	private final int MINUS = 45;
 	private final int SPACE = 32;
 	private final int NEW_LINE = 10;
 	private final int TAB = 11;
@@ -134,6 +139,26 @@ public class Tokenizer {
 		return c == QUOTE;
 	}
 	
+	private boolean isGreaterThan(char c){
+		return c == GREATER_THAN;
+	}
+	
+	private boolean isLessThan(char c){
+		return c == LESS_THAN;
+	}
+	
+	private boolean isEquals(char c){
+		return c == EQUALS;
+	}
+	
+	private boolean isPlus(char c){
+		return c == PLUS;
+	}
+	
+	private boolean isMinus(char c){
+		return c == MINUS;
+	}
+	
 	private boolean isPeriod(char c){
 		return c == PERIOD;
 	}
@@ -193,23 +218,49 @@ public class Tokenizer {
 		if(isSymbol(c)){
 			if(isQuote(c)){
 				state = TokenType.STRING;
-			}else{
-				buffer.addChar(c);
-				tokens.add(toToken(state, buffer));
-				buffer.clear();
-				if(isLetter(nextChar(chars))){
-					state = TokenType.NAME;
-					addTokenToList(buffer, tokens);
-				}
-				else if(isSpace(nextChar(chars))){
-					addTokenToList(buffer, tokens);
-					state = TokenType.SPACE;
-				}
-				else if(isNumber(nextChar(chars))){
-					addTokenToList(buffer, tokens);
-					state = TokenType.NUMBER;
-				}	
 			}
+			else if(isGreaterThan(c) || isLessThan(c)){
+				if(isEquals(nextChar(chars))){
+					buffer.addChar(c);
+				}else{
+					finalizeSymbol(c, chars, buffer, tokens);
+				}
+			}
+			else if(isPlus(c)){
+				if(isPlus(nextChar(chars))){
+					buffer.addChar(c);
+				}else{
+					finalizeSymbol(c, chars, buffer, tokens);
+				}
+			}
+			else if(isMinus(c)){
+				if(isMinus(nextChar(chars))){
+					buffer.addChar(c);
+				}else{
+					finalizeSymbol(c, chars, buffer, tokens);
+				}
+			}
+			else{
+				finalizeSymbol(c, chars, buffer, tokens);
+			}
+		}
+	}
+
+	private void finalizeSymbol(char c, char[] chars, CharBuffer buffer, List<Token> tokens){
+		buffer.addChar(c);
+		tokens.add(toToken(state, buffer));
+		buffer.clear();
+		if(isLetter(nextChar(chars))){
+			state = TokenType.NAME;
+			addTokenToList(buffer, tokens);
+		}
+		else if(isSpace(nextChar(chars))){
+			addTokenToList(buffer, tokens);
+			state = TokenType.SPACE;
+		}
+		else if(isNumber(nextChar(chars))){
+			addTokenToList(buffer, tokens);
+			state = TokenType.NUMBER;
 		}
 	}
 
