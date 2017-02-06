@@ -35,6 +35,7 @@ import com.teamhandsome.compiler.syntax.rules.TypedVariableName;
 import com.teamhandsome.compiler.syntax.rules.VariableNameStatement;
 import com.teamhandsome.compiler.syntax.rules.VariableParam;
 import com.teamhandsome.compiler.syntax.rules.VariableStatement;
+import com.teamhandsome.compiler.syntax.rules.WhileLoop;
 import com.teamhandsome.compiler.syntax.rules.WhileLoopStatement;
 import com.teamhandsome.grammar.KeyWord;
 import com.teamhandsome.interfaces.IGrammar;
@@ -63,7 +64,7 @@ public class SyntaxParser {
 				new WhileLoopStatement(), new IfStatement(), new MathOperationStatement(), new ModifiedAssignmentStatement(),
 				new MultiDeclareVariable(), new TypeVariable(), new MathVariable(), new TypedVariableName(),
 				new MultiDeclareVariable(), new MathOpVariableName(), new BodyToForLoop(), new If(), new IfElse(),
-				});
+				new WhileLoop()});
 	}
 
 	public SyntaxTree toTree(List<Token> tokens){
